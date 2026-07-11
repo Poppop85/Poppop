@@ -26,7 +26,11 @@ const vowelButtons =
 
 const feedback =
     document.getElementById("feedback");
+const previousButton =
+    document.getElementById("previousButton");
 
+const nextButton =
+    document.getElementById("nextButton");
 const questionNumber =
     document.getElementById("question-number");
 
@@ -274,7 +278,7 @@ async function finishActivity() {
         finishButton.addEventListener(
             "click",
             () => {
-                window.location.href = "index.html";
+window.location.href = "activity3.html";
             }
         );
     } catch (error) {
@@ -328,3 +332,16 @@ vowelButtons.forEach((button) => {
         );
     });
 });
+previousButton.addEventListener(
+    "click",
+    () => {
+        window.location.href = "index.html";
+    }
+);
+
+nextButton.addEventListener(
+    "click",
+    () => {
+        window.location.href = "activity3.html";
+    }
+);

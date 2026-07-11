@@ -63,6 +63,10 @@ const restartButton =
 
 const nextActivityButton =
     document.querySelector("#next-activity-button");
+    const previousActivityButton =
+    document.querySelector(
+        "#previous-activity-button"
+    );
 
 const vowelButtons =
     document.querySelectorAll(".vowel");
@@ -102,6 +106,9 @@ const emailInput =
 
 const startButton =
     document.querySelector("#start-button");
+
+const guestButton =
+    document.querySelector("#guest-button");
 
 const emailMessage =
     document.querySelector("#email-message");
@@ -499,6 +506,21 @@ function startGame() {
 
     showQuestion();
 }
+function startAsGuest() {
+
+    studentEmail = "";
+
+    localStorage.removeItem(
+        "studentEmail"
+    );
+
+    emailMessage.textContent = "";
+
+    loginScreen.hidden = true;
+    gameContainer.hidden = false;
+
+    showQuestion();
+}
 
 
 /* ---------------- BUTTON EVENTS ---------------- */
@@ -547,6 +569,10 @@ startButton.addEventListener(
     "click",
     startGame
 );
+guestButton.addEventListener(
+    "click",
+    startAsGuest
+);
 
 emailInput.addEventListener(
     "keydown",
@@ -565,4 +591,18 @@ if (nextActivityButton) {
                 "vowels.html";
         }
     );
+}if(previousActivityButton){
+
+previousActivityButton.addEventListener(
+
+"click",
+
+()=>{
+
+window.location.href="index.html";
+
+}
+
+);
+
 }

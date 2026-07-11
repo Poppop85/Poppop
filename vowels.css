@@ -147,4 +147,108 @@ body {
     text-shadow: 0 3px 6px black;
 
     z-index: 20;
+.activity-navigation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 18px;
+
+    width: 100%;
+    padding-right: 40px;
+    margin-top: 25px;
+}
+
+.activity-navigation button{
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#73d89b;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+@media(max-width:600px){
+    .activity-navigation{
+
+    justify-content:flex-end;
+
+    padding-right:15px;
+
+    gap:10px;
+
+}
+
+.activity-navigation button{
+
+    width:auto;
+
+    padding:10px 15px;
+
+    font-size:16px;
+
+}
+
+.activity-navigation{
+
+flex-direction:column;
+
+align-items:center;
+
+}
+
+.activity-navigation button{
+
+width:220px;
+
+}
+
+}.back-button{
+
+    margin-top:20px;
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#73d89b;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}@media (max-width:600px){
+
+    .activity-navigation{
+
+        justify-content:flex-end;
+
+        padding-right:15px;
+
+        gap:10px;
+
+    }
+
+    .activity-navigation button{
+
+        width:auto;
+
+        padding:10px 15px;
+
+        font-size:16px;
+
+    }
+
 }
