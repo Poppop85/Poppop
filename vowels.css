@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+.game-background {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-image: url("./images/vowel-background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Invisible button over the speaker in the image */
+.play-button {
+    position: absolute;
+
+    top: 39%;
+    left: 50%;
+
+    width: 130px;
+    height: 130px;
+
+    transform: translate(-50%, -50%);
+
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+    z-index: 10;
+}
+
+.play-button:hover {
+    outline: 4px solid rgba(255, 255, 255, 0.6);
+}
+
+.play-button:active {
+    transform: translate(-50%, -50%) scale(0.92);
+}
+
+/* Container over the five vowel buttons */
+.vowel-buttons {
+    position: absolute;
+
+    top: 63%;
+    left: 50%;
+
+    width: 610px;
+    height: 120px;
+
+    transform: translateX(-50%);
+
+    z-index: 10;
+}
+
+/* Invisible buttons over the letters */
+.vowel-button {
+    position: absolute;
+    top: 0;
+
+    width: 105px;
+    height: 115px;
+
+    background: transparent;
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+}
+
+/* Individual positions */
+.vowel-button[data-vowel="a"] {
+    left: 0;
+}
+
+.vowel-button[data-vowel="e"] {
+    left: 126px;
+}
+
+.vowel-button[data-vowel="i"] {
+    left: 252px;
+}
+
+.vowel-button[data-vowel="o"] {
+    left: 378px;
+}
+
+.vowel-button[data-vowel="u"] {
+    left: 504px;
+}
+
+.vowel-button:hover {
+    outline: 4px solid rgba(255, 255, 255, 0.7);
+}
+
+.vowel-button.correct {
+    outline: 7px solid #64ff64;
+}
+
+.vowel-button.incorrect {
+    outline: 7px solid #ff4f4f;
+}
+
+.feedback {
+    position: absolute;
+
+    bottom: 7%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+
+    text-shadow: 0 3px 6px black;
+
+    z-index: 20;
+}.progress {
+    position: absolute;
+
+    top: 5%;
+    right: 8%;
+
+    color: white;
+
+    font-size: 28px;
+    font-weight: bold;
+
+    text-shadow: 0 3px 6px black;
+
+    z-index: 20;
+}

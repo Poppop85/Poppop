@@ -1,3 +1,19 @@
+/* ---------------- SUPABASE ---------------- */
+
+const SUPABASE_URL =
+    "https://ainfigfcsyayxqguiecy.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_ZGvyEHuIM-5ZIuOUL4174A_VgSni472";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* ---------------- QUESTIONS ---------------- */
+
 const questions = [
     { display: "C _ T", answer: "A", word: "cat" },
     { display: "H _ N", answer: "E", word: "hen" },
@@ -11,34 +27,87 @@ const questions = [
     { display: "C _ P", answer: "U", word: "cup" }
 ];
 
+
+/* ---------------- GAME VARIABLES ---------------- */
+
 let currentQuestion = 0;
 let score = 0;
 let answered = false;
-
-const wordElement = document.querySelector("#word");
-const scoreElement = document.querySelector("#score");
-const messageElement = document.querySelector("#message");
-
-const nextButton = document.querySelector("#next-button");
-const soundButton = document.querySelector("#sound-button");
-const restartButton = document.querySelector("#restart-button");
-
-const vowelButtons = document.querySelectorAll(".vowel");
-
-const resultArea = document.querySelector("#result-area");
-const finalScoreElement = document.querySelector("#final-score");
-const previousScoreElement = document.querySelector("#previous-score");
-const resultMessageElement = document.querySelector("#result-message");
-
-const recordButton = document.querySelector("#record-button");
-const stopButton = document.querySelector("#stop-button");
-const recordingMessage = document.querySelector("#recording-message");
-const audioPlayback = document.querySelector("#audio-playback");
+let studentEmail = "";
 
 let mediaRecorder;
 let audioChunks = [];
 let microphoneStream;
 let currentAudioURL = null;
+
+
+/* ---------------- HTML ELEMENTS ---------------- */
+
+const wordElement =
+    document.querySelector("#word");
+
+const scoreElement =
+    document.querySelector("#score");
+
+const messageElement =
+    document.querySelector("#message");
+
+const nextButton =
+    document.querySelector("#next-button");
+
+const soundButton =
+    document.querySelector("#sound-button");
+
+const restartButton =
+    document.querySelector("#restart-button");
+
+const nextActivityButton =
+    document.querySelector("#next-activity-button");
+
+const vowelButtons =
+    document.querySelectorAll(".vowel");
+
+const resultArea =
+    document.querySelector("#result-area");
+
+const finalScoreElement =
+    document.querySelector("#final-score");
+
+const previousScoreElement =
+    document.querySelector("#previous-score");
+
+const resultMessageElement =
+    document.querySelector("#result-message");
+
+const recordButton =
+    document.querySelector("#record-button");
+
+const stopButton =
+    document.querySelector("#stop-button");
+
+const recordingMessage =
+    document.querySelector("#recording-message");
+
+const audioPlayback =
+    document.querySelector("#audio-playback");
+
+const loginScreen =
+    document.querySelector("#login-screen");
+
+const gameContainer =
+    document.querySelector("#game-container");
+
+const emailInput =
+    document.querySelector("#email-input");
+
+const startButton =
+    document.querySelector("#start-button");
+
+const emailMessage =
+    document.querySelector("#email-message");
+
+
+/* ---------------- SHOW QUESTION ---------------- */
 
 function showQuestion() {
     answered = false;
@@ -64,6 +133,9 @@ function showQuestion() {
 
     resetRecording();
 }
+
+
+/* ---------------- CHECK ANSWER ---------------- */
 
 function checkAnswer(selectedVowel) {
     if (answered) {
@@ -95,6 +167,9 @@ function checkAnswer(selectedVowel) {
     nextButton.disabled = false;
 }
 
+
+/* ---------------- NEXT QUESTION ---------------- */
+
 function nextQuestion() {
     if (!answered) {
         return;
@@ -109,19 +184,86 @@ function nextQuestion() {
     showQuestion();
 }
 
-function finishActivity() {
-    const previousScore = localStorage.getItem("poppopVowelScore");
 
-    localStorage.setItem("poppopVowelScore", String(score));
+/* ---------------- OPTIONAL OLD SAVE FUNCTION ---------------- */
+
+/*
+This function is kept here, but it is not called after Activity 1.
+
+Activity 1 stores its score in localStorage.
+Activity 2 saves both results to Supabase.
+*/
+
+async function saveResultToSupabase() {
+    const result = {
+        email: studentEmail,
+        score: score,
+        total_questions: questions.length,
+        activity: "Short Vowels",
+        marketing_consent: true
+    };
+
+    const { error } = await supabaseClient
+        .from("student_results")
+        .insert(result);
+
+    if (error) {
+        console.error(
+            "Supabase save error:",
+            error
+        );
+
+        return;
+    }
+
+    console.log(
+        "Email and score saved successfully."
+    );
+}
+
+
+/* ---------------- FINISH ACTIVITY 1 ---------------- */
+
+function finishActivity() {
+    /*
+    Store Activity 1 information for vowels.js.
+    Activity 2 will upload both scores.
+    */
+
+    localStorage.setItem(
+        "cvcScore",
+        String(score)
+    );
+
+    localStorage.setItem(
+        "cvcTotal",
+        String(questions.length)
+    );
+
+    localStorage.setItem(
+        "studentEmail",
+        studentEmail
+    );
+
+    const previousScore =
+        localStorage.getItem("poppopVowelScore");
+
+    localStorage.setItem(
+        "poppopVowelScore",
+        String(score)
+    );
 
     wordElement.hidden = true;
     messageElement.hidden = true;
     nextButton.hidden = true;
     soundButton.hidden = true;
 
-    document.querySelector(".vowel-buttons").hidden = true;
+    document.querySelector(
+        ".vowel-buttons"
+    ).hidden = true;
 
-    const recordingArea = document.querySelector(".recording-area");
+    const recordingArea =
+        document.querySelector(".recording-area");
 
     if (recordingArea) {
         recordingArea.hidden = true;
@@ -130,9 +272,11 @@ function finishActivity() {
     finalScoreElement.textContent = score;
 
     if (previousScore === null) {
-        previousScoreElement.textContent = "This is your first attempt.";
+        previousScoreElement.textContent =
+            "This is your first attempt.";
     } else {
-        previousScoreElement.textContent = `${previousScore} / 10`;
+        previousScoreElement.textContent =
+            `${previousScore} / ${questions.length}`;
     }
 
     if (score === 10) {
@@ -150,7 +294,17 @@ function finishActivity() {
     }
 
     resultArea.hidden = false;
+
+    /*
+    This must be INSIDE finishActivity().
+    */
+    if (nextActivityButton) {
+        nextActivityButton.hidden = false;
+    }
 }
+
+
+/* ---------------- RESTART ACTIVITY ---------------- */
 
 function restartActivity() {
     currentQuestion = 0;
@@ -164,9 +318,12 @@ function restartActivity() {
     nextButton.hidden = false;
     soundButton.hidden = false;
 
-    document.querySelector(".vowel-buttons").hidden = false;
+    document.querySelector(
+        ".vowel-buttons"
+    ).hidden = false;
 
-    const recordingArea = document.querySelector(".recording-area");
+    const recordingArea =
+        document.querySelector(".recording-area");
 
     if (recordingArea) {
         recordingArea.hidden = false;
@@ -176,6 +333,9 @@ function restartActivity() {
 
     showQuestion();
 }
+
+
+/* ---------------- SPEECH ---------------- */
 
 function speakWord(word) {
     if (!("speechSynthesis" in window)) {
@@ -187,7 +347,8 @@ function speakWord(word) {
 
     window.speechSynthesis.cancel();
 
-    const speech = new SpeechSynthesisUtterance(word);
+    const speech =
+        new SpeechSynthesisUtterance(word);
 
     speech.lang = "en-US";
     speech.rate = 0.75;
@@ -195,11 +356,16 @@ function speakWord(word) {
     window.speechSynthesis.speak(speech);
 }
 
+
+/* ---------------- RECORDING ---------------- */
+
 function resetRecording() {
     if (microphoneStream) {
-        microphoneStream.getTracks().forEach((track) => {
-            track.stop();
-        });
+        microphoneStream
+            .getTracks()
+            .forEach((track) => {
+                track.stop();
+            });
     }
 
     if (currentAudioURL) {
@@ -207,48 +373,71 @@ function resetRecording() {
         currentAudioURL = null;
     }
 
-    audioPlayback.pause();
-    audioPlayback.removeAttribute("src");
-    audioPlayback.hidden = true;
+    if (audioPlayback) {
+        audioPlayback.pause();
+        audioPlayback.removeAttribute("src");
+        audioPlayback.hidden = true;
+    }
 
-    recordButton.disabled = false;
-    stopButton.disabled = true;
+    if (recordButton) {
+        recordButton.disabled = false;
+    }
 
-    recordingMessage.textContent =
-        "Press Start Recording, then say the word.";
+    if (stopButton) {
+        stopButton.disabled = true;
+    }
+
+    if (recordingMessage) {
+        recordingMessage.textContent =
+            "Press Start Recording, then say the word.";
+    }
 }
 
 async function startRecording() {
     try {
         microphoneStream =
-            await navigator.mediaDevices.getUserMedia({ audio: true });
+            await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
 
-        mediaRecorder = new MediaRecorder(microphoneStream);
+        mediaRecorder =
+            new MediaRecorder(microphoneStream);
+
         audioChunks = [];
 
-        mediaRecorder.addEventListener("dataavailable", (event) => {
-            if (event.data.size > 0) {
-                audioChunks.push(event.data);
+        mediaRecorder.addEventListener(
+            "dataavailable",
+            (event) => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
             }
-        });
+        );
 
-        mediaRecorder.addEventListener("stop", () => {
-            const audioBlob = new Blob(audioChunks, {
-                type: mediaRecorder.mimeType
-            });
+        mediaRecorder.addEventListener(
+            "stop",
+            () => {
+                const audioBlob =
+                    new Blob(audioChunks, {
+                        type: mediaRecorder.mimeType
+                    });
 
-            currentAudioURL = URL.createObjectURL(audioBlob);
+                currentAudioURL =
+                    URL.createObjectURL(audioBlob);
 
-            audioPlayback.src = currentAudioURL;
-            audioPlayback.hidden = false;
+                audioPlayback.src = currentAudioURL;
+                audioPlayback.hidden = false;
 
-            recordingMessage.textContent =
-                "Great! Press play to hear your pronunciation.";
+                recordingMessage.textContent =
+                    "Great! Press play to hear your pronunciation.";
 
-            microphoneStream.getTracks().forEach((track) => {
-                track.stop();
-            });
-        });
+                microphoneStream
+                    .getTracks()
+                    .forEach((track) => {
+                        track.stop();
+                    });
+            }
+        );
 
         mediaRecorder.start();
 
@@ -279,22 +468,101 @@ function stopRecording() {
     }
 }
 
+
+/* ---------------- LOGIN ---------------- */
+
+function startGame() {
+    const enteredEmail =
+        emailInput.value.trim();
+
+    if (
+        enteredEmail === "" ||
+        !emailInput.checkValidity()
+    ) {
+        emailMessage.textContent =
+            "Please enter a valid email address.";
+
+        return;
+    }
+
+    studentEmail = enteredEmail;
+
+    localStorage.setItem(
+        "studentEmail",
+        studentEmail
+    );
+
+    emailMessage.textContent = "";
+
+    loginScreen.hidden = true;
+    gameContainer.hidden = false;
+
+    showQuestion();
+}
+
+
+/* ---------------- BUTTON EVENTS ---------------- */
+
 vowelButtons.forEach((button) => {
     button.addEventListener("click", () => {
         checkAnswer(button.dataset.vowel);
     });
 });
 
-nextButton.addEventListener("click", nextQuestion);
-restartButton.addEventListener("click", restartActivity);
+nextButton.addEventListener(
+    "click",
+    nextQuestion
+);
 
-soundButton.addEventListener("click", () => {
-    const question = questions[currentQuestion];
+restartButton.addEventListener(
+    "click",
+    restartActivity
+);
 
-    speakWord(question.word);
-});
+soundButton.addEventListener(
+    "click",
+    () => {
+        const question =
+            questions[currentQuestion];
 
-recordButton.addEventListener("click", startRecording);
-stopButton.addEventListener("click", stopRecording);
+        speakWord(question.word);
+    }
+);
 
-showQuestion();
+if (recordButton) {
+    recordButton.addEventListener(
+        "click",
+        startRecording
+    );
+}
+
+if (stopButton) {
+    stopButton.addEventListener(
+        "click",
+        stopRecording
+    );
+}
+
+startButton.addEventListener(
+    "click",
+    startGame
+);
+
+emailInput.addEventListener(
+    "keydown",
+    (event) => {
+        if (event.key === "Enter") {
+            startGame();
+        }
+    }
+);
+
+if (nextActivityButton) {
+    nextActivityButton.addEventListener(
+        "click",
+        () => {
+            window.location.href =
+                "vowels.html";
+        }
+    );
+}

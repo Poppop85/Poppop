@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Vowel Activity</title>
+
+    <link rel="stylesheet" href="vowels.css">
+</head>
+
+<body>
+
+    <div class="game-background">
+
+        <div class="progress">
+            ⭐ <span id="question-number">1</span>/10
+        </div>
+
+        <button
+            id="playButton"
+            class="play-button"
+            type="button"
+            aria-label="Play vowel sound"
+        ></button>
+
+        <div class="vowel-buttons">
+
+            <button
+                class="vowel-button"
+                data-vowel="a"
+                type="button"
+            ></button>
+
+            <button
+                class="vowel-button"
+                data-vowel="e"
+                type="button"
+            ></button>
+
+            <button
+                class="vowel-button"
+                data-vowel="i"
+                type="button"
+            ></button>
+
+            <button
+                class="vowel-button"
+                data-vowel="o"
+                type="button"
+            ></button>
+
+            <button
+                class="vowel-button"
+                data-vowel="u"
+                type="button"
+            ></button>
+
+        </div>
+
+        <p id="feedback" class="feedback"></p>
+
+    </div>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="vowels.js"></script>
+
+</body>
+
+</html>

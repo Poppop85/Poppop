@@ -143,3 +143,17 @@ h1 {
 
     cursor: pointer;
 }
+
+.result-buttons {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+#next-activity-button {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
