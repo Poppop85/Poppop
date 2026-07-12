@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Poppop Phonics - Activity 4</title>
+
+    <link rel="stylesheet" href="activity4.css">
+</head>
+
+<body>
+
+    <main class="game-card">
+
+        <h1>🏀 Poppop Phonics 🏀</h1>
+
+        <h2>Activity 4</h2>
+
+        <p class="instructions">
+            Listen carefully and drag the basketball to the correct number.
+        </p>
+
+        <div class="score-area">
+            Score:
+            <span id="score">0</span>/10
+        </div>
+
+        <div class="progress">
+            Question
+            <span id="question-number">1</span>
+            of
+            <span id="total-questions">10</span>
+        </div>
+
+        <button
+            id="sound-button"
+            class="sound-button">
+            🔊 Hear Number
+        </button>
+
+        <div class="court">
+
+            <div class="hoop" data-hoop="0">
+                <div class="basket">🥅</div>
+                <div class="number" id="number0">1</div>
+            </div>
+
+            <div class="hoop" data-hoop="1">
+                <div class="basket">🥅</div>
+                <div class="number" id="number1">2</div>
+            </div>
+
+            <div class="hoop" data-hoop="2">
+                <div class="basket">🥅</div>
+                <div class="number" id="number2">3</div>
+            </div>
+
+        </div>
+
+        <div class="ball-area">
+
+            <div
+                id="basketball"
+                draggable="true">
+                ⚽
+            </div>
+
+        </div>
+
+        <div
+            id="feedback"
+            class="feedback">
+            Press the speaker and drag the basketball.
+        </div>
+
+        <button
+            id="previousButton"
+            class="sound-button">
+            ← Previous Activity
+        </button>
+
+    </main>
+
+    <script src="activity4.js"></script>
+
+</body>
+</html>

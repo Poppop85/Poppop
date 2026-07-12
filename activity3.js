@@ -95,6 +95,9 @@ const soundButton =
 
 const previousButton =
     document.querySelector("#previousButton");
+    
+const nextButton =
+    document.querySelector("#nextButton");
 
 const gameCard =
     document.querySelector(".game-card");
@@ -569,22 +572,38 @@ function finishActivity() {
             <button
                 id="play-again-button"
                 class="sound-button"
-                type="button"
-            >
+                type="button">
                 Play Again
+            </button>
+
+            <button
+                id="next-activity-button"
+                class="sound-button"
+                type="button">
+                Activity 4 →
             </button>
 
         </div>
     `;
 
+ 
+        document
+    .querySelector("#next-activity-button")
+    .addEventListener(
+        "click",
+        () => {
+            window.location.href =
+                "activity4.html";
+        }
+    );
+
     document
-        .querySelector(
-            "#play-again-button"
-        )
+        .querySelector("#next-activity-button")
         .addEventListener(
             "click",
             () => {
-                window.location.reload();
+                window.location.href =
+                    "activity4.html";
             }
         );
 
@@ -592,7 +611,6 @@ function finishActivity() {
         `Great job. Your score is ${score} out of ${questions.length}.`
     );
 }
-
 
 /* ---------------- SPEECH ---------------- */
 
@@ -660,5 +678,12 @@ previousButton.addEventListener(
     "click",
     () => {
         window.location.href = "vowels.html";
+    }
+);
+
+nextButton.addEventListener(
+    "click",
+    () => {
+        window.location.href = "activity4.html";
     }
 );
