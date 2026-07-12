@@ -1,0 +1,191 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#06182b;
+}
+
+.game-screen{
+
+    position:relative;
+
+    width:100vw;
+    height:100dvh;
+
+    background-image:url("images/museum-background.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    overflow:hidden;
+
+}
+
+.instruction-box{
+
+    position:absolute;
+
+    top:20px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    padding:12px 20px;
+
+    color:white;
+
+    font-size:22px;
+    font-weight:bold;
+
+    background:rgba(0,0,0,.65);
+
+    border-radius:12px;
+
+}
+
+.character {
+    position: absolute;
+    left: 50%;
+    top: 75%;
+
+    width: 100px;
+    height: 145px;
+
+    background-image: url("images/character-sprite.png");
+
+    /* The sheet contains six characters across and two rows. */
+    background-size: 600% 200%;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
+
+    transform: translate(-50%, -50%);
+    z-index: 10;
+
+    pointer-events: none;
+    user-select: none;
+
+    transition:
+        left 0.2s linear,
+        top 0.2s linear,
+        transform 0.2s linear;
+}
+
+.controls{
+
+    position:absolute;
+
+    bottom:20px;
+    left:20px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:8px;
+
+}
+
+.middle-controls{
+
+    display:flex;
+
+    gap:55px;
+
+}
+
+.direction-button{
+
+    width:75px;
+    height:65px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#0077ff;
+
+    color:white;
+
+    font-size:24px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.direction-button span{
+
+    display:block;
+
+    font-size:11px;
+
+}
+@media (max-width: 600px) {
+
+    .character {
+        width: 70px;
+        height: 105px;
+    }
+
+    .controls {
+        left: 12px;
+        bottom: 12px;
+    }
+
+    .direction-button {
+        width: 62px;
+        height: 55px;
+        font-size: 20px;
+    }
+
+    .middle-controls {
+        gap: 42px;
+    }
+
+    .direction-button span {
+        font-size: 10px;
+    }
+
+}
+.previous-activity-button {
+
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    padding: 12px 22px;
+
+    background: #008cff;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 30px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow: 0 6px 15px rgba(0,0,0,.35);
+
+    z-index: 9999;
+
+    transition: 0.2s;
+
+}
+
+.previous-activity-button:hover {
+
+    background: #006edc;
+
+    transform: scale(1.05);
+
+}

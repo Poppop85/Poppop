@@ -205,3 +205,34 @@ h2 {
         font-size: 17px;
     }
 }
+.next-activity-button {
+
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    padding: 12px 22px;
+
+    background: #008cff;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 30px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow: 0 6px 15px rgba(0,0,0,.35);
+
+    z-index: 9999;
+
+}
+
+.next-activity-button:hover {
+
+    background: #006edc;
+
+}
