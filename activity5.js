@@ -243,6 +243,8 @@ function startReading() {
         return;
     }
 
+    window.speechSynthesis.cancel();
+
     finalTranscript = "";
     hasFinished = false;
     startTime = Date.now();
