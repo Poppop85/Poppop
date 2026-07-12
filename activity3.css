@@ -236,4 +236,8 @@ font-size:20px;
 
 }
 
+}#nextButton {
+    position: relative;
+    z-index: 20;
+    touch-action: manipulation;
 }
