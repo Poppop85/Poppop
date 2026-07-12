@@ -1,59 +1,146 @@
-const character=document.getElementById("character");
+const character = document.getElementById("character");
 
-let x=50;
-let y=75;
+const forwardButton = document.getElementById("forwardButton");
+const backwardButton = document.getElementById("backwardButton");
+const leftButton = document.getElementById("leftButton");
+const rightButton = document.getElementById("rightButton");
 
-const step=4;
+const arrivalMessage = document.getElementById("arrivalMessage");
 
-function update(){
+let x = 50;
+let y = 75;
 
-    character.style.left=x+"%";
-    character.style.top=y+"%";
+const step = 4;
 
+let isEnteringBuilding = false;
+
+/*
+Building entrance area.
+
+The building is on the upper-left side of the background.
+
+x controls left and right.
+y controls forward and backward.
+
+You can adjust these four numbers later if needed.
+*/
+const buildingArea = {
+    minimumX: 5,
+    maximumX: 36,
+    minimumY: 15,
+    maximumY: 48
+};
+
+function updateCharacter() {
+    character.style.left = `${x}%`;
+    character.style.top = `${y}%`;
+
+    checkBuilding();
 }
 
-document.getElementById("forwardButton").onclick=function(){
+function checkBuilding() {
+    const insideBuilding =
+        x >= buildingArea.minimumX &&
+        x <= buildingArea.maximumX &&
+        y >= buildingArea.minimumY &&
+        y <= buildingArea.maximumY;
 
-    y-=step;
+    if (insideBuilding && !isEnteringBuilding) {
+        enterBuilding();
+    }
+}
 
-    if(y<10)y=10;
+function enterBuilding() {
+    isEnteringBuilding = true;
 
-    update();
+    arrivalMessage.classList.add("show");
 
-};
+    forwardButton.disabled = true;
+    backwardButton.disabled = true;
+    leftButton.disabled = true;
+    rightButton.disabled = true;
 
-document.getElementById("backwardButton").onclick=function(){
+    setTimeout(function () {
+        window.location.href = "activity4.html";
+    }, 900);
+}
 
-    y+=step;
+function moveForward() {
+    if (isEnteringBuilding) return;
 
-    if(y>90)y=90;
+    y -= step;
 
-    update();
+    if (y < 10) {
+        y = 10;
+    }
 
-};
+    updateCharacter();
+}
 
-document.getElementById("leftButton").onclick=function(){
+function moveBackward() {
+    if (isEnteringBuilding) return;
 
-    x-=step;
+    y += step;
 
-    if(x<5)x=5;
+    if (y > 90) {
+        y = 90;
+    }
 
-    character.style.transform="translate(-50%,-50%) scaleX(-1)";
+    updateCharacter();
+}
 
-    update();
+function moveLeft() {
+    if (isEnteringBuilding) return;
 
-};
+    x -= step;
 
-document.getElementById("rightButton").onclick=function(){
+    if (x < 5) {
+        x = 5;
+    }
 
-    x+=step;
+    character.style.transform =
+        "translate(-50%, -50%) scaleX(-1)";
 
-    if(x>95)x=95;
+    updateCharacter();
+}
 
-    character.style.transform="translate(-50%,-50%) scaleX(1)";
+function moveRight() {
+    if (isEnteringBuilding) return;
 
-    update();
+    x += step;
 
-};
+    if (x > 95) {
+        x = 95;
+    }
 
-update();
+    character.style.transform =
+        "translate(-50%, -50%) scaleX(1)";
+
+    updateCharacter();
+}
+
+forwardButton.addEventListener("click", moveForward);
+backwardButton.addEventListener("click", moveBackward);
+leftButton.addEventListener("click", moveLeft);
+rightButton.addEventListener("click", moveRight);
+
+/* Computer keyboard controls */
+document.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowUp") {
+        moveForward();
+    }
+
+    if (event.key === "ArrowDown") {
+        moveBackward();
+    }
+
+    if (event.key === "ArrowLeft") {
+        moveLeft();
+    }
+
+    if (event.key === "ArrowRight") {
+        moveRight();
+    }
+});
+
+updateCharacter();

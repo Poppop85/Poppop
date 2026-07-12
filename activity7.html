@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0,
+        maximum-scale=1.0, user-scalable=no"
+    >
 
     <title>Activity 7 - Follow the Directions</title>
 
@@ -16,34 +19,57 @@
 
     <main class="game-screen" id="gameScreen">
 
-        <div class="instruction-box">
-            Follow the directions
+        <div class="instruction-box" id="instructionBox">
+            Move to the building
         </div>
 
-<div class="character" id="character"></div>
+        <!-- Character -->
+        <div class="character" id="character"></div>
 
+        <!-- Message shown when entering the building -->
+        <div class="arrival-message" id="arrivalMessage">
+            Entering the building...
+        </div>
+
+        <!-- Movement buttons -->
         <div class="controls">
 
-            <button class="direction-button" id="forwardButton">
+            <button
+                class="direction-button"
+                id="forwardButton"
+                aria-label="Move forward"
+            >
                 ▲
                 <span>Forward</span>
             </button>
 
             <div class="middle-controls">
 
-                <button class="direction-button" id="leftButton">
+                <button
+                    class="direction-button"
+                    id="leftButton"
+                    aria-label="Move left"
+                >
                     ◀
                     <span>Left</span>
                 </button>
 
-                <button class="direction-button" id="rightButton">
+                <button
+                    class="direction-button"
+                    id="rightButton"
+                    aria-label="Move right"
+                >
                     ▶
                     <span>Right</span>
                 </button>
 
             </div>
 
-            <button class="direction-button" id="backwardButton">
+            <button
+                class="direction-button"
+                id="backwardButton"
+                aria-label="Move backward"
+            >
                 ▼
                 <span>Back</span>
             </button>
@@ -53,10 +79,10 @@
     </main>
 
     <a href="activity5.html" class="previous-activity-button">
-    ◀ Previous Activity
-</a>
+        ◀ Previous Activity
+    </a>
+
     <script src="activity7.js"></script>
 
 </body>
-
 </html>
