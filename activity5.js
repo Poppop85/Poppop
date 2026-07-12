@@ -250,17 +250,21 @@ function startReading() {
     statusMessage.textContent =
         "🎤 Listening... Please read the passage.";
 
-    try {
-        recognition.start();
-    } catch (error) {
-        console.error(error);
+try {
 
-        statusMessage.textContent =
-            "Speech recognition is already running.";
+    recognition.stop();
 
-        startButton.disabled = false;
-        stopButton.disabled = true;
-    }
+} catch (e) {
+
+}
+
+setTimeout(() => {
+
+    recognition.start();
+
+}, 300);
+
+}
 }
 
 
