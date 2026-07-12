@@ -52,7 +52,7 @@ const previousButton =
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
-
+let isListening = false;
 let recognition = null;
 let finalTranscript = "";
 let startTime = 0;
@@ -236,12 +236,18 @@ function startReading() {
         return;
     }
 
+    if (isListening) {
+        statusMessage.textContent =
+            "The microphone is already listening.";
+
+        return;
+    }
+
     finalTranscript = "";
     hasFinished = false;
     startTime = Date.now();
 
     resultArea.hidden = true;
-
     recognisedText.textContent = "";
 
     startButton.disabled = true;
@@ -250,41 +256,34 @@ function startReading() {
     statusMessage.textContent =
         "🎤 Listening... Please read the passage.";
 
-try {
+    try {
+        recognition.start();
+    } catch (error) {
+        console.error(error);
 
-    recognition.stop();
+        isListening = false;
+        startButton.disabled = false;
+        stopButton.disabled = true;
 
-} catch (e) {
-
-}
-
-setTimeout(() => {
-
-    recognition.start();
-
-}, 300);
-
-}
+        statusMessage.textContent =
+            "Please wait a moment, then press Start Reading again.";
+    }
 }
 
 
 /* ---------------- STOP READING ---------------- */
 
 function stopReading() {
-    if (
-        !recognition ||
-        hasFinished
-    ) {
+    if (!recognition || !isListening) {
         return;
     }
 
     hasFinished = true;
-
     stopButton.disabled = true;
-    startButton.disabled = false;
 
     recognition.stop();
 }
+
 
 
 /* ---------------- SPEECH RESULTS ---------------- */
@@ -312,22 +311,37 @@ if (recognition) {
             statusMessage.textContent =
                 `🎤 I heard: ${finalTranscript}`;
         };
+recognition.onstart =
+    () => {
 
+        isListening = true;
 
-    recognition.onend =
-        () => {
-            if (!hasFinished) {
-                return;
-            }
+    };
 
-            calculateResult();
+recognition.onend =
+    () => {
 
-            resultArea.hidden =
-                false;
+        isListening = false;
 
-            statusMessage.textContent =
-                "Reading finished.";
-        };
+        startButton.disabled =
+            false;
+
+        stopButton.disabled =
+            true;
+
+        if (!hasFinished) {
+            return;
+        }
+
+        calculateResult();
+
+        resultArea.hidden =
+            false;
+
+        statusMessage.textContent =
+            "Reading finished.";
+
+    };
 
 
     recognition.onerror =
