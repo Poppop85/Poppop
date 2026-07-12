@@ -61,7 +61,7 @@ function enterBuilding() {
     rightButton.disabled = true;
 
     setTimeout(function () {
-        window.location.href = "activity4.html";
+        window.location.href = "activity5.html";
     }, 900);
 }
 
