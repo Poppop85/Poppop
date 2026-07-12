@@ -260,16 +260,16 @@ function startReading() {
 
     try {
         recognition.start();
-    } catch (error) {
-        console.error(error);
+  } catch (error) {
+    console.error(error);
 
-        isListening = false;
-        startButton.disabled = false;
-        stopButton.disabled = true;
+    isListening = false;
+    startButton.disabled = false;
+    stopButton.disabled = true;
 
-        statusMessage.textContent =
-            "Please wait a moment, then press Start Reading again.";
-    }
+    statusMessage.textContent =
+        `Could not start speech recognition: ${error.name}`;
+}
 }
 
 
@@ -352,6 +352,8 @@ recognition.onend =
                 "Speech recognition error:",
                 event.error
             );
+            isListening = false;
+
 
             startButton.disabled =
                 false;
