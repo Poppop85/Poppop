@@ -8,7 +8,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Poppop Phonics - Activity 5</title>
+    <title>Poppop English - Reading Assessment</title>
 
     <link rel="stylesheet" href="activity5.css">
 </head>
@@ -17,84 +17,104 @@
 
     <main class="game-card">
 
-        <h1>📚 Poppop Phonics 📚</h1>
+        <h1>📖 Reading Assessment</h1>
 
         <h2>Activity 5</h2>
 
         <p class="instructions">
-            Walk to the library door.
+            Read the passage aloud.
         </p>
 
-        <div id="game-world" class="game-world">
+        <section
+            id="passage"
+            class="passage"
+            aria-label="Reading passage">
 
-            <div class="sky-decoration">
-                ☁️
-            </div>
+            <span>The cat is small.</span>
+            <span>It has a red ball.</span>
+            <span>The cat likes to play.</span>
+            <span>It runs in the garden.</span>
+            <span>Then it goes home.</span>
 
-            <div class="library">
-
-                <div class="library-sign">
-                    LIBRARY
-                </div>
-
-                <div class="library-building">
-                    🏛️
-                </div>
-
-                <div
-                    id="library-door"
-                    class="library-door">
-                    🚪
-                </div>
-
-            </div>
-
-            <div
-                id="character"
-                class="character">
-                🙂
-            </div>
-
-        </div>
+        </section>
 
         <p
-            id="message"
-            class="message">
-            Use the buttons to walk.
+            id="status-message"
+            class="status-message">
+            Press Start Reading when you are ready.
         </p>
 
-        <button
-            id="enter-button"
-            class="enter-button"
-            type="button"
-            hidden>
-            📚 Enter Library
-        </button>
-
-        <div class="movement-buttons">
+        <div class="recording-buttons">
+            
+<button
+    id="listen-button"
+    class="main-button"
+    type="button">
+    🔊 Listen First
+</button>
 
             <button
-                id="left-button"
-                class="move-button"
+                id="start-button"
+                class="main-button"
                 type="button">
-                ⬅️
+                🎤 Start Reading
             </button>
 
             <button
-                id="up-button"
-                class="move-button"
-                type="button">
-                ⬆️
-            </button>
-
-            <button
-                id="right-button"
-                class="move-button"
-                type="button">
-                ➡️
+                id="stop-button"
+                class="main-button stop-button"
+                type="button"
+                disabled>
+                ⏹ Stop
             </button>
 
         </div>
+
+        <section
+            id="result-area"
+            class="result-area"
+            hidden>
+
+            <h2>Your Estimated Result</h2>
+
+            <p>
+                Accuracy:
+                <strong>
+                    <span id="accuracy-score">0</span>%
+                </strong>
+            </p>
+
+            <p>
+                Reading time:
+                <strong>
+                    <span id="reading-time">0</span>
+                    seconds
+                </strong>
+            </p>
+
+            <p>
+                Reading speed:
+                <strong>
+                    <span id="words-per-minute">0</span>
+                    words per minute
+                </strong>
+            </p>
+
+            <h3>The app heard:</h3>
+
+            <p
+                id="recognized-text"
+                class="recognized-text">
+            </p>
+
+            <button
+                id="try-again-button"
+                class="main-button"
+                type="button">
+                Try Again
+            </button>
+
+        </section>
 
         <div class="activity-navigation">
 
@@ -102,7 +122,7 @@
                 id="previous-button"
                 class="navigation-button"
                 type="button">
-                ← Activity 4
+                ← Activity 5
             </button>
 
         </div>

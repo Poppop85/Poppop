@@ -671,3 +671,12 @@ previousButton.addEventListener(
             "activity3.html";
     }
 );
+const nextButton =
+    document.querySelector("#nextButton");
+
+nextButton.addEventListener(
+    "click",
+    () => {
+        window.location.href = "activity5.html";
+    }
+);

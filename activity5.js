@@ -1,220 +1,445 @@
 "use strict";
 
 
-/* ---------------- CHARACTER POSITION ---------------- */
+/* ---------------- PASSAGE ---------------- */
 
-let characterX = 50;
-let characterY = 25;
+const expectedText = `
+The cat is small.
+It has a red ball.
+The cat likes to play.
+It runs in the garden.
+Then it goes home.
+`;
 
 
 /* ---------------- HTML ELEMENTS ---------------- */
+const listenButton =
+    document.querySelector("#listen-button");
+    
+const startButton =
+    document.querySelector("#start-button");
 
-const character =
-    document.querySelector("#character");
+const stopButton =
+    document.querySelector("#stop-button");
 
-const libraryDoor =
-    document.querySelector("#library-door");
+const statusMessage =
+    document.querySelector("#status-message");
 
-const message =
-    document.querySelector("#message");
+const resultArea =
+    document.querySelector("#result-area");
 
-const enterButton =
-    document.querySelector("#enter-button");
+const recognisedText =
+    document.querySelector("#recognized-text");
 
-const leftButton =
-    document.querySelector("#left-button");
+const accuracyScore =
+    document.querySelector("#accuracy-score");
 
-const rightButton =
-    document.querySelector("#right-button");
+const readingTime =
+    document.querySelector("#reading-time");
 
-const upButton =
-    document.querySelector("#up-button");
+const wordsPerMinute =
+    document.querySelector("#words-per-minute");
+
+const tryAgainButton =
+    document.querySelector("#try-again-button");
 
 const previousButton =
     document.querySelector("#previous-button");
 
 
-/* ---------------- MOVE CHARACTER ---------------- */
+/* ---------------- SPEECH RECOGNITION ---------------- */
 
-function updateCharacterPosition() {
-    character.style.left =
-        `${characterX}%`;
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-    character.style.bottom =
-        `${characterY}px`;
+let recognition = null;
+let finalTranscript = "";
+let startTime = 0;
+let hasFinished = false;
 
-    checkLibraryDoor();
+
+/* ---------------- CHECK BROWSER SUPPORT ---------------- */
+
+if (!SpeechRecognition) {
+    statusMessage.textContent =
+        "Speech recognition is not supported in this browser.";
+
+    startButton.disabled = true;
+    stopButton.disabled = true;
+} else {
+    recognition =
+        new SpeechRecognition();
+
+    recognition.lang =
+        "en-US";
+
+    recognition.interimResults =
+        true;
+
+    recognition.continuous =
+        true;
 }
 
 
-function moveLeft() {
-    characterX -= 6;
+/* ---------------- CLEAN TEXT ---------------- */
 
-    if (characterX < 5) {
-        characterX = 5;
-    }
-
-    updateCharacterPosition();
+function cleanText(text) {
+    return text
+        .toLowerCase()
+        .replace(/[.,!?;:]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
 
-function moveRight() {
-    characterX += 6;
+/* ---------------- WORD MATCHING ---------------- */
 
-    if (characterX > 95) {
-        characterX = 95;
+function calculateMatchingWords(
+    expectedWords,
+    spokenWords
+) {
+    const rows =
+        expectedWords.length + 1;
+
+    const columns =
+        spokenWords.length + 1;
+
+    const table =
+        Array.from(
+            { length: rows },
+            () =>
+                Array(columns).fill(0)
+        );
+
+    for (
+        let expectedIndex = 1;
+        expectedIndex < rows;
+        expectedIndex++
+    ) {
+        for (
+            let spokenIndex = 1;
+            spokenIndex < columns;
+            spokenIndex++
+        ) {
+            if (
+                expectedWords[
+                    expectedIndex - 1
+                ] ===
+                spokenWords[
+                    spokenIndex - 1
+                ]
+            ) {
+                table[expectedIndex][spokenIndex] =
+                    table[
+                        expectedIndex - 1
+                    ][
+                        spokenIndex - 1
+                    ] + 1;
+            } else {
+                table[expectedIndex][spokenIndex] =
+                    Math.max(
+                        table[
+                            expectedIndex - 1
+                        ][spokenIndex],
+                        table[
+                            expectedIndex
+                        ][
+                            spokenIndex - 1
+                        ]
+                    );
+            }
+        }
     }
 
-    updateCharacterPosition();
+    return table[
+        expectedWords.length
+    ][spokenWords.length];
 }
 
 
-function moveUp() {
-    characterY += 22;
+/* ---------------- CALCULATE RESULT ---------------- */
 
-    if (characterY > 180) {
-        characterY = 180;
-    }
+function calculateResult() {
+    const cleanExpected =
+        cleanText(expectedText);
 
-    updateCharacterPosition();
+    const cleanSpoken =
+        cleanText(finalTranscript);
+
+    const expectedWords =
+        cleanExpected
+            ? cleanExpected.split(" ")
+            : [];
+
+    const spokenWords =
+        cleanSpoken
+            ? cleanSpoken.split(" ")
+            : [];
+
+    const matchingWords =
+        calculateMatchingWords(
+            expectedWords,
+            spokenWords
+        );
+
+    const accuracy =
+        expectedWords.length > 0
+            ? Math.round(
+                (
+                    matchingWords /
+                    expectedWords.length
+                ) * 100
+            )
+            : 0;
+
+    const elapsedSeconds =
+        Math.max(
+            1,
+            Math.round(
+                (
+                    Date.now() -
+                    startTime
+                ) / 1000
+            )
+        );
+
+    const wpm =
+        spokenWords.length > 0
+            ? Math.round(
+                (
+                    spokenWords.length /
+                    elapsedSeconds
+                ) * 60
+            )
+            : 0;
+
+    accuracyScore.textContent =
+        accuracy;
+
+    readingTime.textContent =
+        elapsedSeconds;
+
+    wordsPerMinute.textContent =
+        wpm;
+
+    recognisedText.textContent =
+        finalTranscript.trim() ||
+        "No speech was recognized.";
 }
 
 
-/* ---------------- CHECK LIBRARY DOOR ---------------- */
+/* ---------------- START READING ---------------- */
 
-function checkLibraryDoor() {
-    const characterArea =
-        character.getBoundingClientRect();
+function startReading() {
+    if (!recognition) {
+        return;
+    }
 
-    const doorArea =
-        libraryDoor.getBoundingClientRect();
+    finalTranscript = "";
+    hasFinished = false;
+    startTime = Date.now();
 
-    const characterCenterX =
-        characterArea.left +
-        characterArea.width / 2;
+    resultArea.hidden = true;
 
-    const characterCenterY =
-        characterArea.top +
-        characterArea.height / 2;
+    recognisedText.textContent = "";
 
-    const isNearDoor =
-        characterCenterX >= doorArea.left - 25 &&
-        characterCenterX <= doorArea.right + 25 &&
-        characterCenterY >= doorArea.top - 35 &&
-        characterCenterY <= doorArea.bottom + 35;
+    startButton.disabled = true;
+    stopButton.disabled = false;
 
-    if (isNearDoor) {
-        message.textContent =
-            "You reached the library!";
+    statusMessage.textContent =
+        "🎤 Listening... Please read the passage.";
 
-        enterButton.hidden = false;
-    } else {
-        message.textContent =
-            "Use the buttons to walk.";
+    try {
+        recognition.start();
+    } catch (error) {
+        console.error(error);
 
-        enterButton.hidden = true;
+        statusMessage.textContent =
+            "Speech recognition is already running.";
+
+        startButton.disabled = false;
+        stopButton.disabled = true;
     }
 }
 
 
-/* ---------------- ENTER LIBRARY ---------------- */
+/* ---------------- STOP READING ---------------- */
 
-enterButton.addEventListener(
-    "click",
-    () => {
-        document.querySelector(
-            ".game-card"
-        ).innerHTML = `
-            <h1>📚 Welcome to the Library 📚</h1>
-
-            <p class="instructions">
-                Choose a learning activity.
-            </p>
-
-            <div class="library-menu">
-
-                <button
-                    class="navigation-button"
-                    onclick="window.location.href='index.html'">
-                    CVC Words
-                </button>
-
-                <button
-                    class="navigation-button"
-                    onclick="window.location.href='vowels.html'">
-                    Vowel Listening
-                </button>
-
-                <button
-                    class="navigation-button"
-                    onclick="window.location.href='activity3.html'">
-                    First Letters
-                </button>
-
-                <button
-                    class="navigation-button"
-                    onclick="window.location.href='activity4.html'">
-                    Number Game
-                </button>
-
-            </div>
-
-            <button
-                class="navigation-button"
-                onclick="window.location.reload()">
-                ← Back Outside
-            </button>
-        `;
+function stopReading() {
+    if (
+        !recognition ||
+        hasFinished
+    ) {
+        return;
     }
-);
 
+    hasFinished = true;
+
+    stopButton.disabled = true;
+    startButton.disabled = false;
+
+    recognition.stop();
+}
+
+
+/* ---------------- SPEECH RESULTS ---------------- */
+
+if (recognition) {
+    recognition.onresult =
+        (event) => {
+            let transcript = "";
+
+            for (
+                let index = 0;
+                index <
+                event.results.length;
+                index++
+            ) {
+                transcript +=
+                    event.results[index][0]
+                        .transcript +
+                    " ";
+            }
+
+            finalTranscript =
+                transcript.trim();
+
+            statusMessage.textContent =
+                `🎤 I heard: ${finalTranscript}`;
+        };
+
+
+    recognition.onend =
+        () => {
+            if (!hasFinished) {
+                return;
+            }
+
+            calculateResult();
+
+            resultArea.hidden =
+                false;
+
+            statusMessage.textContent =
+                "Reading finished.";
+        };
+
+
+    recognition.onerror =
+        (event) => {
+            console.error(
+                "Speech recognition error:",
+                event.error
+            );
+
+            startButton.disabled =
+                false;
+
+            stopButton.disabled =
+                true;
+
+            hasFinished = true;
+
+            if (
+                event.error ===
+                "no-speech"
+            ) {
+                statusMessage.textContent =
+                    "No speech was detected. Please try again.";
+            } else if (
+                event.error ===
+                "not-allowed"
+            ) {
+                statusMessage.textContent =
+                    "Microphone permission was not allowed.";
+            } else {
+                statusMessage.textContent =
+                    `Speech recognition error: ${event.error}`;
+            }
+        };
+}
+/* ---------------- LISTEN FIRST ---------------- */
+
+function readPassageAloud() {
+
+    if (!("speechSynthesis" in window)) {
+        statusMessage.textContent =
+            "Speech is not supported.";
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(expectedText);
+
+    speech.lang = "en-US";
+    speech.rate = 0.75;
+    speech.pitch = 1;
+
+    const voices =
+        speechSynthesis.getVoices();
+
+    const zira =
+        voices.find(
+            voice =>
+                voice.name.includes("Zira")
+        );
+
+    if (zira) {
+        speech.voice = zira;
+    }
+
+    speechSynthesis.speak(speech);
+
+}
 
 /* ---------------- BUTTON EVENTS ---------------- */
-
-leftButton.addEventListener(
+listenButton.addEventListener(
     "click",
-    moveLeft
+    readPassageAloud
 );
 
-rightButton.addEventListener(
+startButton.addEventListener(
     "click",
-    moveRight
+    startReading
 );
 
-upButton.addEventListener(
+stopButton.addEventListener(
     "click",
-    moveUp
+    stopReading
 );
 
+tryAgainButton.addEventListener(
+    "click",
+    () => {
+        finalTranscript = "";
+        hasFinished = false;
 
-/* ---------------- KEYBOARD CONTROLS ---------------- */
+        resultArea.hidden = true;
 
-document.addEventListener(
-    "keydown",
-    (event) => {
-        if (event.key === "ArrowLeft") {
-            moveLeft();
-        }
+        recognisedText.textContent = "";
 
-        if (event.key === "ArrowRight") {
-            moveRight();
-        }
+        accuracyScore.textContent =
+            "0";
 
-        if (event.key === "ArrowUp") {
-            moveUp();
-        }
+        readingTime.textContent =
+            "0";
 
-        if (
-            event.key === "Enter" &&
-            !enterButton.hidden
-        ) {
-            enterButton.click();
-        }
+        wordsPerMinute.textContent =
+            "0";
+
+        statusMessage.textContent =
+            "Press Start Reading when you are ready.";
+
+        startButton.disabled =
+            false;
+
+        stopButton.disabled =
+            true;
     }
 );
-
-
-/* ---------------- PREVIOUS ACTIVITY ---------------- */
 
 previousButton.addEventListener(
     "click",
@@ -223,8 +448,3 @@ previousButton.addEventListener(
             "activity4.html";
     }
 );
-
-
-/* ---------------- START POSITION ---------------- */
-
-updateCharacterPosition();
