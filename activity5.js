@@ -276,14 +276,27 @@ function startReading() {
 /* ---------------- STOP READING ---------------- */
 
 function stopReading() {
-    if (!recognition || !isListening) {
+    if (!recognition) {
         return;
     }
 
     hasFinished = true;
     stopButton.disabled = true;
 
-    recognition.stop();
+    statusMessage.textContent =
+        "Stopping...";
+
+    try {
+        recognition.stop();
+    } catch (error) {
+        console.error(error);
+    }
+
+    setTimeout(() => {
+        if (isListening) {
+            recognition.abort();
+        }
+    }, 800);
 }
 
 
@@ -291,28 +304,44 @@ function stopReading() {
 /* ---------------- SPEECH RESULTS ---------------- */
 
 if (recognition) {
-    recognition.onresult =
-        (event) => {
-            let transcript = "";
+recognition.onresult =
+    (event) => {
 
-            for (
-                let index = 0;
-                index <
-                event.results.length;
-                index++
-            ) {
-                transcript +=
-                    event.results[index][0]
-                        .transcript +
-                    " ";
+        let interimTranscript = "";
+
+        for (
+            let index = event.resultIndex;
+            index < event.results.length;
+            index++
+        ) {
+            const transcript =
+                event.results[index][0]
+                    .transcript
+                    .trim();
+
+            if (event.results[index].isFinal) {
+                finalTranscript +=
+                    (
+                        finalTranscript
+                            ? " "
+                            : ""
+                    ) + transcript;
+            } else {
+                interimTranscript +=
+                    transcript + " ";
             }
+        }
 
-            finalTranscript =
-                transcript.trim();
+        const displayedText =
+            (
+                finalTranscript +
+                " " +
+                interimTranscript
+            ).trim();
 
-            statusMessage.textContent =
-                `🎤 I heard: ${finalTranscript}`;
-        };
+        statusMessage.textContent =
+            `🎤 I heard: ${displayedText}`;
+    };
 recognition.onstart =
     () => {
 
@@ -348,10 +377,16 @@ recognition.onend =
 
     recognition.onerror =
         (event) => {
+
+            if (event.error === "aborted") {
+    return;
+    
+}
             console.error(
                 "Speech recognition error:",
                 event.error
             );
+
             isListening = false;
 
 
