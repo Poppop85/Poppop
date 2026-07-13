@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Important for phones and tablets -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Responsive Learning Activity</title>
+
+  <style>
+    /* Removes default spacing and makes sizing easier */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #eef8ff, #ffffff);
+      color: #1f2937;
+    }
+
+    /* Main page container */
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      padding: 16px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Main activity box */
+    .activity-card {
+      width: 100%;
+      max-width: 950px;
+
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+
+      text-align: center;
+
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .progress {
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #4b5563;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+
+      /* Automatically changes size depending on screen */
+      font-size: clamp(28px, 6vw, 48px);
+    }
+
+    .instruction {
+      margin-bottom: 22px;
+      line-height: 1.5;
+      font-size: clamp(16px, 4vw, 21px);
+    }
+
+    /* Phone layout: items appear vertically */
+    .main-area {
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      gap: 22px;
+    }
+
+    /* Speaker button */
+    .sound-button {
+      width: clamp(95px, 28vw, 135px);
+      aspect-ratio: 1 / 1;
+
+      border: none;
+      border-radius: 50%;
+
+      background: #2563eb;
+      color: white;
+
+      font-size: clamp(35px, 10vw, 60px);
+
+      cursor: pointer;
+
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+    }
+
+    .sound-button:hover {
+      background: #1d4ed8;
+    }
+
+    .sound-button:active {
+      transform: scale(0.95);
+    }
+
+    /* Vowel answer area */
+    .answers {
+      width: 100%;
+
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .answer-button {
+      min-height: 75px;
+
+      border: 3px solid #dbeafe;
+      border-radius: 18px;
+
+      background: #f8fbff;
+
+      font-size: clamp(30px, 9vw, 50px);
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .answer-button:hover {
+      background: #eff6ff;
+    }
+
+    /* Correct answer */
+    .answer-button.correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+    }
+
+    /* Wrong answer */
+    .answer-button.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+
+    .message {
+      min-height: 32px;
+      margin-top: 18px;
+
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    /* Previous and Next buttons */
+    .footer-buttons {
+      margin-top: 22px;
+
+      display: flex;
+      justify-content: space-between;
+
+      gap: 12px;
+    }
+
+    .nav-button {
+      flex: 1;
+
+      min-height: 52px;
+      padding: 10px;
+
+      border: none;
+      border-radius: 14px;
+
+      background: #e5e7eb;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .next-button {
+      background: #f59e0b;
+      color: white;
+    }
+
+    /* Tablet layout */
+    @media screen and (min-width: 768px) {
+      .activity-card {
+        padding: 35px;
+      }
+
+      .main-area {
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .answers {
+        max-width: 520px;
+      }
+
+      .answer-button {
+        min-height: 100px;
+      }
+    }
+
+    /* Laptop and desktop layout */
+    @media screen and (min-width: 1024px) {
+      .page {
+        padding: 30px;
+      }
+
+      .main-area {
+        gap: 50px;
+      }
+    }
+
+    /* Small phone layout */
+    @media screen and (max-width: 380px) {
+      .page {
+        padding: 8px;
+      }
+
+      .activity-card {
+        padding: 16px 10px;
+        border-radius: 18px;
+      }
+
+      .answers {
+        gap: 7px;
+      }
+
+      .answer-button {
+        min-height: 65px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="activity-card">
+
+      <div class="progress">
+        Activity 1 of 5
+      </div>
+
+      <h1>Listen and Choose</h1>
+
+      <p class="instruction">
+        Press the speaker, listen to the sound, and choose the correct vowel.
+      </p>
+
+      <div class="main-area">
+
+        <!-- Speaker button -->
+        <button
+          class="sound-button"
+          id="soundButton"
+          aria-label="Play sound"
+        >
+          🔊
+        </button>
+
+        <!-- Vowel answer buttons -->
+        <div class="answers">
+
+          <button class="answer-button" data-answer="A">
+            A
+          </button>
+
+          <button class="answer-button" data-answer="E">
+            E
+          </button>
+
+          <button class="answer-button" data-answer="I">
+            I
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Correct or wrong message -->
+      <div class="message" id="message"></div>
+
+      <!-- Navigation buttons -->
+      <div class="footer-buttons">
+
+        <button class="nav-button">
+          Previous
+        </button>
+
+        <button class="nav-button next-button">
+          Next
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // Correct answer for this example
+    const correctAnswer = "A";
+
+    // Finds elements from the HTML
+    const soundButton = document.getElementById("soundButton");
+    const message = document.getElementById("message");
+    const answerButtons = document.querySelectorAll(".answer-button");
+
+    // Plays the letter A when the speaker is pressed
+    soundButton.addEventListener("click", function () {
+      const speech = new SpeechSynthesisUtterance("A");
+
+      speech.rate = 0.7;
+      speech.pitch = 1;
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(speech);
+    });
+
+    // Checks the student's answer
+    answerButtons.forEach(function (button) {
+
+      button.addEventListener("click", function () {
+
+        // Removes old colors
+        answerButtons.forEach(function (item) {
+          item.classList.remove("correct");
+          item.classList.remove("wrong");
+        });
+
+        const selectedAnswer = button.dataset.answer;
+
+        if (selectedAnswer === correctAnswer) {
+          button.classList.add("correct");
+          message.textContent = "Correct! Great job!";
+        } else {
+          button.classList.add("wrong");
+          message.textContent = "Try again.";
+        }
+
+      });
+
+    });
+  </script>
+
+</body>
+</html>
